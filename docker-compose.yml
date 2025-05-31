@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: deligo-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=deligo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - deligo-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: deligo-pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    depends_on:
+      - postgres
+    networks:
+      - deligo-network
+
+  app:
+    build: .
+    container_name: deligo-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_NAME=deligo
+      - JWT_SECRET=seu_jwt_secret_aqui
+      - JWT_EXPIRES_IN=1d
+    depends_on:
+      - postgres
+    networks:
+      - deligo-network
+
+volumes:
+  postgres_data:
+
+networks:
+  deligo-network:
+    driver: bridge 
