@@ -27,7 +27,7 @@ import { OrdersModule } from './modules/orders/orders.module';
       password: process.env.DATABASE_PASSWORD || 'postgres',
       database: process.env.DATABASE_NAME || 'deligo',
       entities: [__dirname + '//*.entity{.ts,.js}'],
-      synchronize: process.env.NODE_ENV === 'development',
+      synchronize: true,
       migrations: [__dirname + '/migrations/*{.ts,.js}'],
       migrationsRun: true,
       autoLoadEntities: true,
