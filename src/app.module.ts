@@ -28,7 +28,7 @@ import { OrdersModule } from './modules/orders/orders.module';
       database: process.env.DATABASE_NAME || 'deligo',
       entities: [__dirname + '//*.entity{.ts,.js}'],
       synchronize: process.env.NODE_ENV === 'development',
-      migrations: ['dist/migrations/*{.ts,.js}'],
+      migrations: [__dirname + '/migrations/*{.ts,.js}'],
       migrationsRun: true,
       autoLoadEntities: true,
     }),
